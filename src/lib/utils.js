@@ -1,15 +1,17 @@
+import jwt from "jsonwebtoken";
+
 export const generateToken = (userId, res) => {
   const token = jwt.sign({ userId }, process.env.JWT_SECRET, {
     expiresIn: "7d",
   });
 
-  const isProd = process.env.NODE_ENV === "production";
+  const isProduction = process.env.NODE_ENV === "production";
 
   res.cookie("jwt", token, {
-    maxAge: 7 * 24 * 60 * 60 * 1000,
-    httpOnly: true,
-    sameSite: isProd ? "None" : "Lax",   // ✅ Use 'Lax' in dev
-    secure: isProd,                      // ✅ Only use secure in prod
+    httpOnly: true, // Prevent JS access (XSS)
+    secure: isProduction, // HTTPS in production
+    sameSite: isProduction ? "None" : "Lax", // "None" allows cross-origin cookies, required for Vercel/Render
+    maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
   });
 
   return token;
