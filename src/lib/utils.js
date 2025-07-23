@@ -9,8 +9,8 @@ export const generateToken = (userId, res) => {
 
   res.cookie("jwt", token, {
     httpOnly: true, // Prevent JS access (XSS)
-    secure: isProduction, // HTTPS in production
-    sameSite: isProduction ? "None" : "Lax", // "None" allows cross-origin cookies, required for Vercel/Render
+    secure: true, // HTTPS in production
+    sameSite: "None", // "None" allows cross-origin cookies, required for Vercel/Render
     maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
   });
 
